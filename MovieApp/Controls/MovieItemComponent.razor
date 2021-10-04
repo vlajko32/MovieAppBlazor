@@ -1,0 +1,32 @@
+﻿@if (this.Movie != null)
+{
+    <tr style="color:#69385C; background-color: #CBDDBB">
+        <td>
+            <NavLink href="@($"movie/{Movie.id}")" style="color:black">
+                @Movie.title
+            </NavLink>
+
+
+
+        </td>
+        <td>@Movie.release_date?.ToString("M-dd-yyyy")</td>
+       
+            @if(@Movie.vote_average>0)
+                {
+                <td>
+                   @Movie.vote_average
+                 </td>
+                }
+                else { 
+                <td>Unknown</td>
+            }
+        
+    </tr>
+}
+
+@code {
+    [Parameter]
+    public Movie Movie { get; set; }
+
+    
+}

@@ -1,0 +1,33 @@
+﻿
+
+<div class="input-group mb-3">
+    <input type="text" class="form-control" @bind-value="filter" placeholder="Enter your key values here" aria-label="Recipient's username" aria-describedby="button-addon2">
+   
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2" @onclick="HandleSearch" style="background-color: #8CC084; color: aliceblue">Search</button>
+    
+    <NavLink href="">
+        <button class="btn btn-outline-secondary" type="button" id="button-addon3" @onclick="HandleReset" style="background-color: #8CC084 ; color: aliceblue">Reset</button>
+    </NavLink>
+    
+</div>
+
+@code {
+
+    private string filter;
+
+    [Parameter]
+    public EventCallback<string> OnSearch { get; set; }
+    [Parameter]
+    public EventCallback<string> OnReset { get; set; }
+
+    private void HandleSearch()
+    {
+        OnSearch.InvokeAsync(filter);
+    }
+
+    private void HandleReset()
+    {
+        OnReset.InvokeAsync(filter);
+    }
+
+}

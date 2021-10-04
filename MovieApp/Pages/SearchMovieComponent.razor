@@ -1,0 +1,158 @@
+﻿@page "/search"
+@inject ISearchMovies getMovies
+
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center" style="color: black">
+        @if (totPages >1 && totPages!=null)
+        {
+        @if (PageNumber != 1)
+        {
+            <li class="page-item"><a class="page-link" href="#" @onclick="onPageFirst" style="color: black">First</a></li>
+        }
+        @if (PageNumber == 1)
+        {
+            <li class="page-item disabled"><a class="page-link" href="#" @onclick="onPageDown" style="color: black">Previous</a></li>
+        }
+        else
+        {
+            <li class="page-item"><a class="page-link" href="#" @onclick="onPageDown" style="color: black">Previous</a></li>
+        }
+        @if (PageNumber > 2)
+        {
+            <li class="page-item"><a class="page-link" href="#" @onclick="onPageDown2" style="color: black">@(PageNumber - 2)</a></li>
+        }
+        @if (PageNumber > 1)
+        {
+            <li class="page-item"><a class="page-link" href="#" @onclick="onPageDown" style="color: black">@(PageNumber - 1)</a></li>
+        }
+
+        <li class="page-item active" aria-current="page"><a class="page-link" href="#">@PageNumber</a></li>
+        @if (PageNumber < totPages)
+        {
+            <li class="page-item"><a class="page-link" href="#" @onclick="onPageUp" style="color: black">@(PageNumber + 1)</a></li>
+        }
+
+        @if (PageNumber + 1 < totPages)
+        {
+            <li class="page-item"><a class="page-link" href="#" @onclick="onPageUp2" style="color: black">@(PageNumber + 2)</a></li>
+        }
+        @if (PageNumber == totPages)
+        {
+            <li class="page-item disabled"><a class="page-link" href="#" @onclick="onPageUp" style="color: black">Next</a></li>
+        }
+        else
+        {
+            <li class="page-item"><a class="page-link" href="#" @onclick="onPageUp" style="color: black">Next</a></li>
+        }
+        @if (PageNumber != totPages)
+        {
+            <li class="page-item"><a class="page-link" href="#" @onclick="onPageLast" style="color: black">Last</a></li>
+        }
+        }
+    </ul>
+</nav>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Release date
+            </th>
+            <th>
+                Rating
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (movies != null && movies.Count() > 0)
+        {
+            @foreach (var movie in movies)
+            {
+                <MovieItemComponent Movie="movie"></MovieItemComponent>
+            }
+        }
+        else if (string.IsNullOrEmpty(Query) && string.IsNullOrWhiteSpace(Query))
+        {
+            <tr>
+                <td class="table-danger" colspan="3">
+                    You must enter some value!
+                </td>
+            </tr>
+        }else
+        {
+        <tr>
+            <td class="table-danger" colspan="3">
+                There is no match!
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+
+    private IEnumerable<Movie> movies;
+    private int totPages;
+    private Response response;
+    [Parameter]
+    public int PageNumber { get; set; }
+
+    [Parameter]
+    public string Query { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (!string.IsNullOrEmpty(Query) && !string.IsNullOrWhiteSpace(Query))
+        {
+            response = getMovies.Execute(Query, PageNumber);
+            movies = response.results;
+            totPages = response.total_pages;
+
+        }
+
+    }
+    private void onPageFirst()
+    {
+        PageNumber = 1;
+        response = getMovies.Execute(Query, PageNumber);
+        movies = response.results;
+    }
+    private void onPageLast()
+    {
+        PageNumber = totPages;
+        response = getMovies.Execute(Query, PageNumber);
+        movies = response.results;
+    }
+
+    private void onPageUp()
+    {
+        PageNumber = PageNumber + 1;
+        response = getMovies.Execute(Query, PageNumber);
+        movies = response.results;
+    }
+    private void onPageUp2()
+    {
+        PageNumber = PageNumber + 2;
+        response = getMovies.Execute(Query, PageNumber);
+        movies = response.results;
+    }
+    private void onPageDown()
+    {
+        PageNumber = PageNumber - 1;
+        response = getMovies.Execute(Query, PageNumber);
+        movies = response.results;
+    }
+    private void onPageDown2()
+    {
+        PageNumber = PageNumber - 2;
+        response = getMovies.Execute(Query, PageNumber);
+        movies = response.results;
+    }
+
+}

@@ -1,0 +1,85 @@
+﻿@page "/movie/{id:int}"
+@inject IGetMovie getMovie
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="card" style="width: 18rem; background-color: #8CC084; color: aliceblue">
+                    <div class="card-body">
+                        <h5 class="card-title">About</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@movie.title</h6>
+                        <p class="card-text">@movie.overview</p>
+                       
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col">
+                <div class="card" style="width: 25rem;">
+                    <img src=@imagePath class="card-img-top" alt="...">
+                    <div class="card-body" style="background-color:#8CC084 ">
+                        <a href="#" class="card-link" style="color:black; position: center" >Back to the home page</a>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" style="width: 18rem; background-color: #8CC084">
+                    <div class="card-header" style="color: aliceblue">
+                        Movie details
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Genres: @Genres</li>
+                        <li class="list-group-item">Release date: @movie.release_date?.ToString("M-dd-yyyy")</li>
+                        <li class="list-group-item">Language: @movie.original_language</li>
+                        <li class="list-group-item">Ratings: @movie.vote_average</li>
+                        <li class="list-group-item">Duration: @movie.runtime min</li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+        </div>
+        
+
+
+
+
+       
+
+
+
+
+        @code {
+
+            private Movie movie;
+            private string imagePath = "https://image.tmdb.org/t/p/w200/";
+            private string Genres;
+
+            [Parameter]
+            public int Id { get; set; }
+
+            protected override void OnParametersSet()
+            {
+                base.OnParametersSet();
+
+                if (Id > 0)
+                {
+                    movie = getMovie.Execute(Id);
+
+                    if (movie.poster_path!= null && movie.poster_path.Length > 0)
+                        imagePath += movie.poster_path;
+                    else
+                    {
+                        imagePath = "https://st4.depositphotos.com/14953852/24787/v/600/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg";
+                    }
+                    if(movie.genres!=null)
+                    {
+                        foreach(Genre genre in movie.genres)
+                        { Genres += genre.name + " "; }
+                    }
+                }
+
+            }
+
+        }

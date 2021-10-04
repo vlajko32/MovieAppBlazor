@@ -1,0 +1,52 @@
+﻿@page "/"
+@inject ISearchMovies getMovies
+@inject NavigationManager uriHelper 
+<div class="container">
+    <div class="row justify-content-md-center">
+
+        <div class="col-md-auto">
+            <h2>Find your favorite movie</h2>
+        </div>
+
+    </div>
+    <br />
+    <div class="row justify-content-md-center">
+        <SearchBarComponent OnSearch="HandleSearch" OnReset="HandleReset"></SearchBarComponent>
+    </div>
+    <br />
+
+    @if (!searched)
+    {
+        <div class="row justify-content-md-center">
+            <img src="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/fall-movies-index-1628968089.jpg?crop=0.470xw:1.00xh;0.353xw,0&resize=640:*"/>
+        </div>
+    }
+    else
+    {
+       
+        <SearchMovieComponent PageNumber=@pageN Query=@filter></SearchMovieComponent>
+    }
+</div>
+    @code {
+        private IEnumerable<Movie> movies;
+        private string filter;
+        private int pageN;
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+        }
+        private Boolean searched = false;
+
+        private void HandleSearch(string filter)
+        {
+            this.filter = filter;
+            pageN = 1;
+            searched = true;
+        }
+
+        private void HandleReset()
+        {
+            uriHelper.NavigateTo("/", forceLoad: true);
+        }
+    }
